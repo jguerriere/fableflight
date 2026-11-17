@@ -2218,6 +2218,21 @@ mod tests {
         }
     }
 
+    /// On a Mac, the generic and specialised shaders through naga's Metal
+    /// writer and Apple's compiler, as wgpu builds them at startup.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn plane_shader_compiles_for_metal() {
+        let src = format!("{}\n{}\n{}\n{}\n{}", include_str!("../../shaders/common.wgsl"), include_str!("../../shaders/plane.wgsl"), strings_wgsl(), include_str!("../../shaders/deck747.wgsl"), include_str!("../../shaders/pit18.wgsl"));
+        for (k, src) in std::iter::once(src.clone()).chain((0..8).map(|k| crate::render::specialise(&src, k))).enumerate() {
+            match crate::shadercheck::compiles_for_metal(&format!("plane #{k}"), &src) {
+                Ok(true) => {}
+                Ok(false) => return eprintln!("no Metal device here: nothing compiled"),
+                Err(e) => panic!("{e}"),
+            }
+        }
+    }
+
     #[test]
     fn view_over_the_nose() {
         // Straight ahead from the captain's eye: the windshield, and below it

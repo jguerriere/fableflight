@@ -38,7 +38,12 @@ zip = { version = "9.6.0", default-features = false, features = ["deflate"] }
 libloading = "0.8"
 
 [dev-dependencies]
-naga = { version = "=30.0.1", features = ["wgsl-in"] }
+naga = { version = "=30.0.1", features = ["wgsl-in", "msl-out-if-target-apple"] }
+
+# on a Mac the shader tests compile the translated shaders with the system's Metal compiler.
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+objc2-foundation = "0.3.2"
+objc2-metal = "0.3.2"
 
 # full lto and one codegen unit for faster release builds.
 [profile.release]

@@ -31,6 +31,8 @@ mod livewx;
 mod nav;
 mod settings;
 mod settings_ui;
+#[cfg(all(test, target_os = "macos"))]
+mod shadercheck;
 mod systems;
 mod gamemode;
 mod gauges;
